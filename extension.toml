@@ -1,0 +1,11 @@
+id = "zed-markdownlint"
+name = "Markdownlint"
+description = "LSP support for `markdownlint`"
+version = "0.0.1"
+schema_version = 1
+authors = ["Vitaly Slobodin <vitaliy.slobodin@gmail.com>"]
+repository = "https://github.com/vitallium/zed-markdownlint"
+
+[language_servers.markdownlint]
+name = "Markdownlint"
+languages = ["Markdown", "markdown-inline"]
