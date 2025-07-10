@@ -1,4 +1,4 @@
-id = "zed-markdownlint"
+id = "markdownlint"
 name = "Markdownlint"
 description = "LSP support for `markdownlint`"
 version = "0.1.0"
