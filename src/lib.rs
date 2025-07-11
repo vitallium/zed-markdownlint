@@ -3,7 +3,7 @@ use std::{env, fs};
 use zed::LanguageServerId;
 use zed_extension_api::{self as zed, Result};
 
-const SERVER_PATH: &str = "node_modules/markdownlint-lsp/lib/index.js";
+const SERVER_PATH: &str = "node_modules/markdownlint-lsp/lib/index.mjs";
 const PACKAGE_NAME: &str = "markdownlint-lsp";
 
 struct MarkdownlintExtension {
