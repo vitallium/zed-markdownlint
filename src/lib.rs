@@ -87,6 +87,40 @@ impl zed::Extension for MarkdownlintExtension {
             env: Default::default(),
         })
     }
+
+    fn language_server_initialization_options(
+        &mut self,
+        language_server_id: &LanguageServerId,
+        worktree: &zed_extension_api::Worktree,
+    ) -> Result<Option<zed_extension_api::serde_json::Value>> {
+        let lsp_settings =
+            match zed::settings::LspSettings::for_worktree(language_server_id.as_ref(), worktree) {
+                Ok(settings) => settings,
+                Err(_) => {
+                    return Ok(Some(zed::serde_json::json!({"config": {}})));
+                }
+            };
+
+        let mut initialization_options = lsp_settings
+            .initialization_options
+            .clone()
+            .unwrap_or_else(|| zed::serde_json::json!({}));
+
+        if !initialization_options.is_object() {
+            initialization_options = zed::serde_json::json!({});
+        }
+
+        let markdownlint_settings = lsp_settings
+            .settings
+            .clone()
+            .unwrap_or_else(|| zed::serde_json::json!({}));
+
+        if let Some(options_obj) = initialization_options.as_object_mut() {
+            options_obj.entry("config").or_insert(markdownlint_settings);
+        }
+
+        Ok(Some(initialization_options))
+    }
 }
 
 zed::register_extension!(MarkdownlintExtension);
