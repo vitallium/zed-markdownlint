@@ -1,7 +1,7 @@
 # zed-markdownlint
 
 This Zed extension uses the
-[`markdownlint-lsp`](https://github.com/markdownlint/markdownlint-cli2/tree/main/packages/markdownlint-lsp)
+[`markdownlint-lsp`](https://github.com/vitallium/markdownlint-lsp)
 language server so Markdown files get lint diagnostics and quick fixes inside
 the editor. The extension installs the server automatically the first time it
 runs.
