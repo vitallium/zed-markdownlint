@@ -47,3 +47,21 @@ rules:
   }
 }
 ```
+
+## Ignore files
+
+Use the `ignores` property (a [`markdownlint-cli2` config option](https://github.com/DavidAnson/markdownlint-cli2#markdownlint-cli2jsonc)) to exclude files from linting. Glob patterns are supported.
+
+```json
+{
+  "lsp": {
+    "markdownlint": {
+      "settings": {
+        "ignores": ["CHANGELOG.md", "docs/generated/**"]
+      }
+    }
+  }
+}
+```
+
+Alternatively, add `ignores` directly to your project's `.markdownlint-cli2.jsonc` config file.
