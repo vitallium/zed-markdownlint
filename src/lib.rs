@@ -78,18 +78,11 @@ impl zed::Extension for MarkdownlintExtension {
             .as_ref()
             .and_then(|binary| binary.env.clone())
             .map(|env| env.into_iter().collect());
-        if let Some(path) = binary_settings
+        let path = binary_settings
             .as_ref()
-            .and_then(|binary| binary.path.as_ref())
-        {
-            return Ok(zed::Command {
-                command: path.clone(),
-                args: arguments.unwrap_or_else(|| vec!["--stdio".to_string()]),
-                env: binary_env.unwrap_or_default(),
-            });
-        }
-
-        if let Some(path) = worktree.which("markdownlint-lsp-server") {
+            .and_then(|binary| binary.path.clone())
+            .or_else(|| worktree.which("markdownlint-lsp-server"));
+        if let Some(path) = path {
             return Ok(zed::Command {
                 command: path,
                 args: arguments.unwrap_or_else(|| vec!["--stdio".to_string()]),
