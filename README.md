@@ -3,8 +3,27 @@
 This Zed extension uses the
 [`markdownlint-lsp`](https://github.com/vitallium/markdownlint-lsp)
 language server so Markdown files get lint diagnostics and quick fixes inside
-the editor. The extension installs the server automatically the first time it
-runs.
+the editor. The extension resolves the server in this order: the configured
+`lsp.markdownlint.binary.path`, `markdownlint-lsp-server` on the worktree PATH,
+then an automatically installed managed `markdownlint-lsp` package.
+
+To use a specific local server executable, configure its path:
+
+```json
+{
+  "lsp": {
+    "markdownlint": {
+      "binary": {
+        "path": "/path/to/markdownlint-lsp-server"
+      }
+    }
+  }
+}
+```
+
+Zed adds `--stdio` by default. If `binary.arguments` is configured, it replaces
+that default, including when set to an empty array. Set `binary.env` to pass
+environment variables to the executable.
 
 ## Override rules
 
