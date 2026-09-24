@@ -1,7 +1,7 @@
 use std::{env, fs};
 
 use zed::LanguageServerId;
-use zed_extension_api::{self as zed, Result};
+use zed_extension_api::{self as zed, settings::LspSettings, Result};
 
 const SERVER_PATH: &str = "node_modules/markdownlint-lsp/lib/index.mjs";
 const PACKAGE_NAME: &str = "markdownlint-lsp";
@@ -15,11 +15,7 @@ impl MarkdownlintExtension {
         fs::metadata(SERVER_PATH).is_ok_and(|stat| stat.is_file())
     }
 
-    fn server_script_path(
-        &mut self,
-        language_server_id: &LanguageServerId,
-        _worktree: &zed::Worktree,
-    ) -> Result<String> {
+    fn server_script_path(&mut self, language_server_id: &LanguageServerId) -> Result<String> {
         let server_exists = self.server_exists();
         if self.did_find_server && server_exists {
             return Ok(SERVER_PATH.to_string());
@@ -72,8 +68,36 @@ impl zed::Extension for MarkdownlintExtension {
         language_server_id: &zed::LanguageServerId,
         worktree: &zed::Worktree,
     ) -> Result<zed::Command> {
-        let server_path = self.server_script_path(language_server_id, worktree)?;
+        let lsp_settings =
+            LspSettings::for_worktree(language_server_id.as_ref(), worktree).unwrap_or_default();
+        let binary_settings = lsp_settings.binary;
+        let arguments = binary_settings
+            .as_ref()
+            .and_then(|binary| binary.arguments.clone());
+        let binary_env = binary_settings
+            .as_ref()
+            .and_then(|binary| binary.env.clone())
+            .map(|env| env.into_iter().collect());
+        if let Some(path) = binary_settings
+            .as_ref()
+            .and_then(|binary| binary.path.as_ref())
+        {
+            return Ok(zed::Command {
+                command: path.clone(),
+                args: arguments.unwrap_or_else(|| vec!["--stdio".to_string()]),
+                env: binary_env.unwrap_or_default(),
+            });
+        }
 
+        if let Some(path) = worktree.which("markdownlint-lsp-server") {
+            return Ok(zed::Command {
+                command: path,
+                args: arguments.unwrap_or_else(|| vec!["--stdio".to_string()]),
+                env: binary_env.unwrap_or_default(),
+            });
+        }
+
+        let server_path = self.server_script_path(language_server_id)?;
         Ok(zed::Command {
             command: zed::node_binary_path()?,
             args: vec![
