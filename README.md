@@ -30,15 +30,18 @@ environment variables to the executable.
 Zed forwards settings from global or
 `<workspace>/.zed/settings.json` (per project) to the language server. Add a
 section for `markdownlint` and list the rules you want to change under
-`settings`.
+`settings.config`. This example disables the line-length and first-line-heading
+rules:
 
 ```json
 {
   "lsp": {
     "markdownlint": {
       "settings": {
-        "MD013": false,
-        "MD041": { "level": "warning" }
+        "config": {
+          "MD013": false,
+          "MD041": false
+        }
       }
     }
   }
