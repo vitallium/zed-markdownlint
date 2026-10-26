@@ -30,23 +30,24 @@ environment variables to the executable.
 Zed forwards settings from global or
 `<workspace>/.zed/settings.json` (per project) to the language server. Add a
 section for `markdownlint` and list the rules you want to change under
-`settings.config`. This example disables the line-length and first-line-heading
-rules:
+`settings` directly, without a `config` wrapper. This example disables the
+line-length and first-line-heading rules:
 
 ```json
 {
   "lsp": {
     "markdownlint": {
       "settings": {
-        "config": {
-          "MD013": false,
-          "MD041": false
-        }
+        "MD013": false,
+        "MD041": false
       }
     }
   }
 }
 ```
+
+After changing these settings, run `editor: restart language server` from Zed's
+command palette. The extension sends rule settings only when the server starts.
 
 ## Ignore files
 
